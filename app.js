@@ -1,4 +1,5 @@
 let listaDeNumerosSorteados = [];
+let listaDeNumerosChutados = [];
 let numeroLimite = 100;
 let numeroSecreto = gerarNumeroAleatorio();
 let tentativas = 1;
@@ -6,7 +7,7 @@ let tentativas = 1;
 function exibirTextoNaTela(tag, texto) {
     let campo = document.querySelector(tag);
     campo.innerHTML = texto;
-    responsiveVoice.speak(texto, 'Brazilian Portuguese Female', {rate:1.2});
+    responsiveVoice.speak(texto, 'Brazilian Portuguese Female', { rate: 1.2 });
 }
 
 function exibirMensagemInicial() {
@@ -18,7 +19,7 @@ exibirMensagemInicial();
 
 function verificarChute() {
     let chute = document.querySelector('input').value;
-    
+    let verifica = chute;
     if (chute == numeroSecreto) {
         exibirTextoNaTela('h1', 'Acertou!');
         let palavraTentativa = tentativas > 1 ? 'tentativas' : 'tentativa';
@@ -26,15 +27,21 @@ function verificarChute() {
         exibirTextoNaTela('p', mensagemTentativas);
         document.getElementById('reiniciar').removeAttribute('disabled');
     } else {
-        if (chute > numeroSecreto) {
-            exibirTextoNaTela('p', 'O número secreto é menor');
+        if (listaDeNumerosChutados.indexOf(verifica) !== -1) {
+            exibirTextoNaTela('p', `Voce ja digitou o numero ${chute}`)
         } else {
-            exibirTextoNaTela('p', 'O número secreto é maior');
+            listaDeNumerosChutados.push(verifica);
+            if (chute > numeroSecreto) {
+                exibirTextoNaTela('p', 'O número secreto é menor');
+            } else {
+                exibirTextoNaTela('p', 'O número secreto é maior');
+            }
+            tentativas++;
+            limparCampo();
         }
-        tentativas++;
-        limparCampo();
     }
 }
+
 
 function gerarNumeroAleatorio() {
     let numeroEscolhido = parseInt(Math.random() * numeroLimite + 1);
@@ -61,11 +68,10 @@ function reiniciarJogo() {
     numeroSecreto = gerarNumeroAleatorio();
     limparCampo();
     tentativas = 1;
+    listaDeNumerosChutados = [];
     exibirMensagemInicial();
     document.getElementById('reiniciar').setAttribute('disabled', true)
 }
-
-
 
 
 
